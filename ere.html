@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Loader</title>
+  <style>
+    body { 
+      background:#111; 
+      color:white; 
+      font-family:Arial; 
+      display:flex; 
+      justify-content:center; 
+      align-items:center; 
+      height:100vh;
+    }
+    button {
+      font-size:20px;
+      padding:15px 30px;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+<button id="openBtn">Open WannaSmile in about:blank</button>
+
+<script>
+document.getElementById("openBtn").onclick = async () => {
+
+  const cdnRoot = "https://cdn.jsdelivr.net/gh/wanna5mile/wanna5mile.github.io@main/";
+
+  // Fetch main index.html
+  let html = await fetch(cdnRoot + "index.html").then(r => r.text());
+
+  // Fix ALL <link>, <script>, <img>, <a>, etc. to use jsDelivr absolute paths
+  html = html.replace(/(src|href)="(?!https?:\/\/)([^"]+)"/g,
+    (match, attr, path) => `${attr}="${cdnRoot}${path}"`);
+
+  // Open blank window
+  const win = window.open("about:blank");
+
+  // Write modified HTML
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+};
+</script>
+
+</body>
+</html>
